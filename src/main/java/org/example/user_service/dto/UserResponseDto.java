@@ -1,4 +1,4 @@
-package org.example.dto;
+package org.example.user_service.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

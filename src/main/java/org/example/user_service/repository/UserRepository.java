@@ -1,8 +1,10 @@
-package org.example.repository;
+package org.example.user_service.repository;
 
-import org.example.entity.User;
+import org.example.user_service.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface  UserRepository extends JpaRepository<User, Long> {
-    User findByEmail(String email);
+    boolean existsByEmail(String email);
 }
+
+

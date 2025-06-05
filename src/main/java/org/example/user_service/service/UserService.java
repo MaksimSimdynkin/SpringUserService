@@ -1,15 +1,14 @@
-package org.example.service;
+package org.example.user_service.service;
 
-import org.example.dto.UserRequestDto;
-import org.example.dto.UserResponseDto;
-import org.springframework.stereotype.Service;
+import org.example.user_service.dto.UserRequestDto;
+import org.example.user_service.dto.UserResponseDto;
 
 import java.util.List;
 
 
-public class UserService  {
+public interface UserService  {
     List<UserResponseDto> getAllUsers();
-    UserRequestDto getUsersById();
+    UserResponseDto getUsersById(Long id);
     UserResponseDto createUser(UserRequestDto userRequestDto);
     UserResponseDto updateUser(Long id, UserRequestDto userRequestDto);
     void deleteUser(Long id);

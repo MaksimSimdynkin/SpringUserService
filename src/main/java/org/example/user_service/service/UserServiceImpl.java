@@ -1,0 +1,76 @@
+package org.example.user_service.service;
+
+
+import jakarta.transaction.Transactional;
+import org.example.user_service.dto.UserRequestDto;
+import org.example.user_service.dto.UserResponseDto;
+import org.example.user_service.entity.User;
+import org.example.user_service.repository.UserRepository;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Transactional
+@Service
+public class UserServiceImpl implements UserService {
+    private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
+
+    @Autowired
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
+        this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
+    }
+
+    @Override
+    public List<UserResponseDto> getAllUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(user -> modelMapper.map(user, UserResponseDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public UserResponseDto getUsersById(Long id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Пользователь с id " + id + " не найден"));
+        return modelMapper.map(user, UserResponseDto.class);
+    }
+
+    @Override
+    public UserResponseDto createUser(UserRequestDto userRequestDto) {
+        if (userRepository.existsByEmail(userRequestDto.getEmail())){
+            throw new RuntimeException("Электронная почта уже существует");
+        }
+        User user = modelMapper.map(userRequestDto, User.class);
+        User userCreated = userRepository.save(user);
+        return modelMapper.map(userCreated, UserResponseDto.class);
+    }
+
+    @Override
+    public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Пользователь с id " + id + " не найден"));
+
+        if (user.getEmail().equals(userRequestDto.getEmail()) &&
+        userRepository.existsByEmail(userRequestDto.getEmail())){
+            throw new RuntimeException("Электронная почта уже существует");
+        }
+
+        modelMapper.map(userRequestDto, user);
+        userRepository.save(user);
+        return modelMapper.map(user, UserResponseDto.class);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)){
+            throw new RuntimeException("Пользователь с id " + id + " не найден");
+        }
+        userRepository.deleteById(id);
+    }
+
+}
