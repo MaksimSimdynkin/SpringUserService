@@ -1,24 +1,16 @@
 package org.example.service;
 
-import org.example.dto.UserDao;
-import org.example.entity.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.example.dto.UserRequestDto;
+import org.example.dto.UserResponseDto;
 import org.springframework.stereotype.Service;
 
-@Service
-public class UserService implements UserDao {
-    private final UserDao userDao;
-    @Autowired
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
-    }
-    @Override
-    public Iterable<User> findAll() {
-        return userDao.findAll();
-    }
+import java.util.List;
 
-    public void getById(Long id) {
 
-    }
-
+public class UserService  {
+    List<UserResponseDto> getAllUsers();
+    UserRequestDto getUsersById();
+    UserResponseDto createUser(UserRequestDto userRequestDto);
+    UserResponseDto updateUser(Long id, UserRequestDto userRequestDto);
+    void deleteUser(Long id);
 }

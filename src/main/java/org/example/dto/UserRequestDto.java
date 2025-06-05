@@ -7,15 +7,15 @@ import jakarta.validation.constraints.PositiveOrZero;
 
 public class UserRequestDto  {
 
-    @NotBlank(message = "Name is required")
+    @NotBlank(message = "Укажите имя")
     private String name;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
+    @NotBlank(message = "Укажите email")
+    @Email(message = "Email должен быть действительным")
     private String email;
 
-    @NotNull(message = "Age is required")
-    @PositiveOrZero(message = "Age should be positive or zero")
+    @NotNull(message = "Укажите возраст")
+    @PositiveOrZero(message = "Возрост не может быть меньше 0")
     private Integer age;
 
 
