@@ -71,7 +71,7 @@ public class User {
         return createdat;
     }
 
-    public void setCreatedAt(LocalDateTime createdat) {
+    public void setCreatedat(LocalDateTime createdat) {
         this.createdat = createdat;
     }
 

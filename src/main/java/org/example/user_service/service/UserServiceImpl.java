@@ -47,7 +47,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Электронная почта уже существует");
         }
         User user = modelMapper.map(userRequestDto, User.class);
-        user.setCreatedAt(LocalDateTime.now());
+        user.setCreatedat(LocalDateTime.now());
         User userCreated = userRepository.save(user);
         return modelMapper.map(userCreated, UserResponseDto.class);
     }
@@ -58,8 +58,8 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("Пользователь с id " + id + " не найден"));
 
         modelMapper.map(userRequestDto, user);
-        userRepository.save(user);
-        return modelMapper.map(user, UserResponseDto.class);
+        User updatedUser = userRepository.save(user);
+        return modelMapper.map(updatedUser, UserResponseDto.class);
     }
 
     @Override
