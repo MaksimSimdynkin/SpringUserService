@@ -47,4 +47,12 @@ public class UserController {
         userService.deleteUser(id);
     }
 
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleRuntimeException(RuntimeException ex) {
+        if (ex.getMessage().contains("not found")) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.badRequest().body(ex.getMessage());
+    }
+
 }

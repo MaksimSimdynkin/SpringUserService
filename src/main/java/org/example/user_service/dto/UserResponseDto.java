@@ -9,7 +9,7 @@ public class UserResponseDto {
     private String email;
     private Integer age;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdat;
 
     public Long getId() {
         return id;
@@ -43,12 +43,12 @@ public class UserResponseDto {
         this.age = age;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getCreatedat() {
+        return createdat;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedat(LocalDateTime createdat) {
+        this.createdat = createdat;
     }
 
     @Override
@@ -58,7 +58,7 @@ public class UserResponseDto {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", age=" + age +
-                ", createdAt=" + createdAt +
+                ", createdAt=" + createdat +
                 '}';
     }
 }
