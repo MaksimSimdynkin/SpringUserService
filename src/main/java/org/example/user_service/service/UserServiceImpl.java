@@ -10,6 +10,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,20 +47,15 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Электронная почта уже существует");
         }
         User user = modelMapper.map(userRequestDto, User.class);
+        user.setCreatedAt(LocalDateTime.now());
         User userCreated = userRepository.save(user);
         return modelMapper.map(userCreated, UserResponseDto.class);
     }
 
-    //Попробовать поменять проверку майла в create
     @Override
     public UserResponseDto updateUser(Long id, UserRequestDto userRequestDto) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Пользователь с id " + id + " не найден"));
-
-        if (user.getEmail().equals(userRequestDto.getEmail()) &&
-        userRepository.existsByEmail(userRequestDto.getEmail())){
-            throw new RuntimeException("Электронная почта уже существует");
-        }
 
         modelMapper.map(userRequestDto, user);
         userRepository.save(user);
@@ -73,5 +69,7 @@ public class UserServiceImpl implements UserService {
         }
         userRepository.deleteById(id);
     }
+
+
 
 }
