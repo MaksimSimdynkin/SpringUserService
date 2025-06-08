@@ -1,11 +1,12 @@
 package org.example.user_service.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,8 +21,9 @@ public class User {
     @Column(nullable = false)
     private Integer age;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    @Column(name = "createdat", nullable = false, updatable = false)
+    @CreationTimestamp
+    private LocalDateTime createdat;
 
     public User() {
     }
@@ -30,7 +32,7 @@ public class User {
         this.name = name;
         this.email = email;
         this.age = age;
-        this.createdAt = LocalDateTime.now();
+        this.createdat = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -65,12 +67,12 @@ public class User {
         this.age = age;
     }
 
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public LocalDateTime getCreatedat() {
+        return createdat;
     }
 
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
+    public void setCreatedAt(LocalDateTime createdat) {
+        this.createdat = createdat;
     }
 
     @Override
@@ -80,6 +82,6 @@ public class User {
                 " name = " + name + " || " +
                 " email = " + email + " || " +
                 " age = " + age + " || " +
-                " createdAt = " + createdAt;
+                " createdAt = " + createdat;
     }
 }
