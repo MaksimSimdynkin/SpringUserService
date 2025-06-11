@@ -19,11 +19,13 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final ModelMapper modelMapper;
     private final UserRepository userRepository;
+    private final UserKafkaProducer userKafkaProducer;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper) {
+    public UserServiceImpl(UserRepository userRepository, ModelMapper modelMapper, UserKafkaProducer userKafkaProducer) {
         this.modelMapper = modelMapper;
         this.userRepository = userRepository;
+        this.userKafkaProducer = userKafkaProducer;
     }
 
     @Override
@@ -49,6 +51,7 @@ public class UserServiceImpl implements UserService {
         User user = modelMapper.map(userRequestDto, User.class);
         user.setCreatedat(LocalDateTime.now());
         User userCreated = userRepository.save(user);
+        userKafkaProducer.sendUserToKafka(userCreated);
         return modelMapper.map(userCreated, UserResponseDto.class);
     }
 
@@ -64,10 +67,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(Long id) {
-        if (!userRepository.existsById(id)){
-            throw new RuntimeException("Пользователь с id " + id + " не найден");
-        }
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Пользователь с id " + id + " не найден"));
+
+        userKafkaProducer.sendUserToKafka(user);
         userRepository.deleteById(id);
+
     }
 
 
