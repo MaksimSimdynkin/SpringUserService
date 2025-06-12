@@ -23,7 +23,8 @@ public class KafkaProducerConfig {
         configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
 
         JsonSerializer<User> jsonSerializer = new JsonSerializer<>(objectMapper);
-
+        jsonSerializer.setAddTypeInfo(false);
+        
         return new DefaultKafkaProducerFactory<>(
                 configProperties,
                 new StringSerializer(),
@@ -31,7 +32,8 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, User> kafkaTemplate(ProducerFactory<String, User> producerFactory) {
+    public KafkaTemplate<String, User> kafkaTemplate(
+            ProducerFactory<String, User> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 }
