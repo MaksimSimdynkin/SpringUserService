@@ -3,7 +3,7 @@ package org.example.user_service.kafkaConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.example.user_service.entity.User;
+import org.example.user_service.dto.UserOperationMessage;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
@@ -18,22 +18,21 @@ import java.util.Map;
 public class KafkaProducerConfig {
 
     @Bean
-    public ProducerFactory<String, User> producerFactory(ObjectMapper objectMapper) {
+    public ProducerFactory<String, UserOperationMessage> producerFactory(ObjectMapper objectMapper) {
         Map<String, Object> configProperties = new HashMap<>();
         configProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-
-        JsonSerializer<User> jsonSerializer = new JsonSerializer<>(objectMapper);
-        jsonSerializer.setAddTypeInfo(false);
+        configProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+        configProperties.put(ProducerConfig.ACKS_CONFIG, "all");
         
+       
         return new DefaultKafkaProducerFactory<>(
-                configProperties,
-                new StringSerializer(),
-                jsonSerializer);
+                configProperties);
     }
 
     @Bean
-    public KafkaTemplate<String, User> kafkaTemplate(
-            ProducerFactory<String, User> producerFactory) {
+    public KafkaTemplate<String, UserOperationMessage> kafkaTemplate(
+            ProducerFactory<String, UserOperationMessage> producerFactory) {
         return new KafkaTemplate<>(producerFactory);
     }
 }
