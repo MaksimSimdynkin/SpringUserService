@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
         User user = modelMapper.map(userRequestDto, User.class);
         user.setCreatedat(LocalDateTime.now());
         User userCreated = userRepository.save(user);
-        userKafkaProducer.senderUserOperation("Create", user.getEmail());
+        userKafkaProducer.senderUserOperation("CREATE", user.getEmail());
         return modelMapper.map(userCreated, UserResponseDto.class);
     }
 
@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Пользователь с id " + id + " не найден"));
 
-        userKafkaProducer.senderUserOperation("Delete", user.getEmail());
+        userKafkaProducer.senderUserOperation("DELETE", user.getEmail());
         userRepository.deleteById(id);
 
     }
