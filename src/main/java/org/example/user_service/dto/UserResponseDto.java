@@ -1,14 +1,33 @@
 package org.example.user_service.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.v3.oas.annotations.media.Schema;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.core.Relation;
 
 import java.time.LocalDateTime;
 
-public class UserResponseDto {
+@Schema(description = "Ответ с данными пользователя")
+@Relation(collectionRelation = "users", itemRelation = "user")
+public class UserResponseDto extends RepresentationModel<UserResponseDto> {
+    @Schema(description = "Уникальный идентификатор пользователя", example = "1")
+    @JsonProperty("id")
     private Long id;
+    
+    @Schema(description = "Имя пользователя", example = "Users")
+    @JsonProperty("name")
     private String name;
+    
+    @Schema(description = "Email пользователя", example = "mail@mail.ru")
+    @JsonProperty("email")
     private String email;
+    
+    @Schema(description = "Возраст пользователя", example = "25")
+    @JsonProperty("age")
     private Integer age;
 
+    @Schema(description = "Дата и время создания записи", example = "2024-01-15T10:30:00")
+    @JsonProperty("createdat")
     private LocalDateTime createdat;
 
     public Long getId() {
