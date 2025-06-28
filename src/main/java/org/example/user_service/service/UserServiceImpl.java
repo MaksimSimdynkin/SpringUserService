@@ -9,6 +9,7 @@ import org.example.user_service.repository.UserRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -44,6 +45,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CircuitBreaker(name = "kafkaService", fallbackMethod = "createUserFallback")
     public UserResponseDto createUser(UserRequestDto userRequestDto) {
         if (userRepository.existsByEmail(userRequestDto.getEmail())){
             throw new RuntimeException("Электронная почта уже существует");
@@ -53,6 +55,10 @@ public class UserServiceImpl implements UserService {
         User userCreated = userRepository.save(user);
         userKafkaProducer.senderUserOperation("CREATE", user.getEmail());
         return modelMapper.map(userCreated, UserResponseDto.class);
+    }
+
+    public UserResponseDto createUserFallback(UserRequestDto userRequestDto, Throwable t) {
+        throw new RuntimeException("Сервис временно недоступен. Попробуйте позже.");
     }
 
     @Override
@@ -66,13 +72,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CircuitBreaker(name = "kafkaService", fallbackMethod = "deleteUserFallback")
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Пользователь с id " + id + " не найден"));
 
         userKafkaProducer.senderUserOperation("DELETE", user.getEmail());
         userRepository.deleteById(id);
+    }
 
+    public void deleteUserFallback(Long id, Throwable t) {
+        throw new RuntimeException("Сервис временно недоступен. Попробуйте позже.");
     }
 
 
