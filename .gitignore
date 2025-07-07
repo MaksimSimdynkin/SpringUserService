@@ -1,9 +1,14 @@
 HELP.md
+mvnw
+mvnw.cmd
+.mvn
+.idea
+.gitignore
+.gitattributes
 target/
 .mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
 ### STS ###
 .apt_generated
 .classpath
